@@ -15,6 +15,7 @@ typedef struct {
     float pib;
     int pontos_turisticos;
     float densidade_populacional;
+    float pib_per_capita;
 } Carta;
 
 typedef enum {
@@ -22,7 +23,8 @@ typedef enum {
     AREA,
     PIB,
     PONTOS_TURISTICOS,
-    DENSIDADE_POPULACIONAL
+    DENSIDADE_POPULACIONAL,
+    PIB_PER_CAPITA
 } TipoAtributo;
 
 typedef enum {
@@ -63,6 +65,7 @@ void lerCarta(Carta *carta, int numero) {
     scanf("%d", &(carta->pontos_turisticos));
     
     carta->densidade_populacional = carta->populacao / carta->area;
+    carta->pib_per_capita = (carta->pib * 1000000000) / carta->populacao;
 }
 
 void exibirCarta(const Carta *carta, int numero) {
@@ -75,6 +78,7 @@ void exibirCarta(const Carta *carta, int numero) {
     printf("PIB: %.2f bilhões de reais\n", carta->pib);
     printf("Número de Pontos Turísticos: %d\n", carta->pontos_turisticos);
     printf("Densidade Populacional: %.2f hab/km²\n", carta->densidade_populacional);
+    printf("PIB per Capita: %.2f reais\n", carta->pib_per_capita);
 }
 
 int exibirMenu(const char *titulo, const char **opcoes, int numOpcoes) {
@@ -97,13 +101,14 @@ float obterValorAtributo(const Carta *carta, TipoAtributo atributo) {
         case PIB: return carta->pib;
         case PONTOS_TURISTICOS: return (float)carta->pontos_turisticos;
         case DENSIDADE_POPULACIONAL: return carta->densidade_populacional;
+        case PIB_PER_CAPITA: return carta->pib_per_capita;
         default: return 0.0f;
     }
 }
 
 const char* obterNomeAtributo(TipoAtributo atributo) {
     static const char *nomes[] = {
-        "", "População", "Área", "PIB", "Pontos Turísticos", "Densidade Populacional"
+        "", "População", "Área", "PIB", "Pontos Turísticos", "Densidade Populacional", "PIB per Capita"
     };
     return nomes[atributo];
 }
@@ -144,20 +149,21 @@ void realizarComparacao(const Carta *carta1, const Carta *carta2) {
         "Área (maior vence)",
         "PIB (maior vence)",
         "Pontos Turísticos (maior vence)",
-        "Densidade Populacional (menor vence)"
+        "Densidade Populacional (menor vence)",
+        "PIB per Capita (maior vence)"
     };
     
     TipoAtributo atributo1, atributo2;
     float valor1_1, valor1_2, valor2_1, valor2_2;
     ResultadoComparacao resultado1, resultado2, resultadoFinal;
     
-    atributo1 = exibirMenu("Escolha o primeiro atributo para comparação", opcoesAtributos, 5);
+    atributo1 = exibirMenu("Escolha o primeiro atributo para comparação", opcoesAtributos, 6);
     if (atributo1 == 0) {
         printf("Opção inválida!\n");
         return;
     }
     
-    atributo2 = exibirMenu("Escolha o segundo atributo para comparação", opcoesAtributos, 5);
+    atributo2 = exibirMenu("Escolha o segundo atributo para comparação", opcoesAtributos, 6);
     if (atributo2 == 0) {
         printf("Opção inválida!\n");
         return;
